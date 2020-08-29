@@ -1,0 +1,14 @@
+server:
+  port: 8760
+
+spring:
+  application:
+    name: eureka
+
+eureka:
+  client:
+    service-url:
+      #设置Eureka Server的地址，注册服务和查询服务都需要用到
+      defaultZone: http://localhost:8760/eureka
+      #不向注册中心注册自己
+      register-with-eureka: false

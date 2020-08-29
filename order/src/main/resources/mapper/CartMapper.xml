@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neu.buybook.mapper.CartMapper">
+  <resultMap id="BaseResultMap" type="com.neu.buybook.model.Cart">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="book_id" jdbcType="INTEGER" property="bookId" />
+    <result column="num" jdbcType="INTEGER" property="num" />
+
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from cart
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.neu.buybook.model.Cart">
+    insert into cart (id, user_id, book_id, 
+      num)
+    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{bookId,jdbcType=INTEGER}, 
+      #{num,jdbcType=INTEGER})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.neu.buybook.model.Cart">
+    update cart
+    set user_id = #{userId,jdbcType=INTEGER},
+      book_id = #{bookId,jdbcType=INTEGER},
+      num = #{num,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select id, user_id, book_id, num
+    from cart
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, user_id, book_id, num
+    from cart
+  </select>
+  <select id="selByUserBook" parameterType="com.neu.buybook.model.Cart" resultMap="BaseResultMap">
+        select id, user_id, book_id, num
+        from cart
+        where user_id=#{userId} and book_id=#{bookId}
+  </select>
+  <select id="selNumByUser" parameterType="Integer" resultType="Integer">
+    select sum(num) from cart where user_id=#{userId}
+  </select>
+  <select id="selByUser" parameterType="Integer" resultMap="BaseResultMap">
+    select c.id, c.user_id, c.book_id, c.num
+    from cart c
+    where c.user_id=#{userId}
+  </select>
+  <delete id="delByUser" parameterType="com.neu.buybook.model.Cart">
+    delete from cart
+    <where>
+      <if test="userId != null and userId != ''">
+        and user_id = #{userId}
+      </if>
+      <if test="bookId != null and bookId != ''">
+        and book_id=#{bookId}
+      </if>
+    </where>
+  </delete>
+</mapper>

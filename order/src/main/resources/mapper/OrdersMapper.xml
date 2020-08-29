@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neu.buybook.mapper.OrdersMapper">
+  <resultMap id="BaseResultMap" type="com.neu.buybook.model.Orders">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="rec_name" jdbcType="VARCHAR" property="recName" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="status" jdbcType="CHAR" property="status" />
+    <result column="order_sum" jdbcType="DOUBLE" property="orderSum" />
+    <result column="shipdate" jdbcType="TIMESTAMP" property="shipdate" />
+    <result column="orderdate" jdbcType="TIMESTAMP" property="orderdate" />
+  </resultMap>
+  <resultMap id="relationResultMap" type="com.neu.buybook.model.Orders" extends="BaseResultMap">
+    <!--一对多-->
+    <collection property="orderItems" ofType="com.neu.buybook.model.OrderItems">
+      <id column="oid" property="id"/>
+      <result column="order_id" property="orderId"/>
+      <result column="book_id" property="bookId"/>
+      <result column="price" property="price"/>
+      <result column="num" property="num"/>
+      <!--一对一-->
+      <association property="book" column="book_id" javaType="com.neu.buybook.model.Book">
+        <id column="bid" jdbcType="INTEGER" property="id" />
+        <result column="bname" jdbcType="VARCHAR" property="bname" />
+        <result column="picture" jdbcType="VARCHAR" property="picture" />
+        <result column="page" jdbcType="INTEGER" property="page" />
+        <result column="publisher" jdbcType="VARCHAR" property="publisher" />
+        <result column="author" jdbcType="VARCHAR" property="author" />
+        <result column="new_book" jdbcType="CHAR" property="newBook" />
+        <result column="hot_book" jdbcType="CHAR" property="hotBook" />
+        <result column="sale_book" jdbcType="CHAR" property="saleBook" />
+        <result column="rec_book" jdbcType="CHAR" property="recBook" />
+        <result column="bdate" jdbcType="TIMESTAMP" property="bdate" />
+        <result column="pub_date" jdbcType="TIMESTAMP" property="pubDate" />
+      </association>
+    </collection>
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from orders
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.neu.buybook.model.Orders" useGeneratedKeys="true"  keyProperty="id">
+    insert into orders (id, code, user_id, 
+      rec_name, address, phone, 
+      status, order_sum, shipdate, 
+      orderdate)
+    values (#{id,jdbcType=INTEGER}, #{code,jdbcType=VARCHAR}, #{userId,jdbcType=INTEGER}, 
+      #{recName,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, 
+      #{status,jdbcType=CHAR}, #{orderSum,jdbcType=DOUBLE}, #{shipdate,jdbcType=TIMESTAMP}, 
+      #{orderdate,jdbcType=TIMESTAMP})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.neu.buybook.model.Orders">
+    update orders
+    set code = #{code,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=INTEGER},
+      rec_name = #{recName,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      phone = #{phone,jdbcType=VARCHAR},
+      status = #{status,jdbcType=CHAR},
+      order_sum = #{orderSum,jdbcType=DOUBLE},
+      shipdate = #{shipdate,jdbcType=TIMESTAMP},
+      orderdate = #{orderdate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select id, code, user_id, rec_name, address, phone, status, order_sum, shipdate, 
+    orderdate
+    from orders
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" parameterType="com.neu.buybook.model.Orders"  resultMap="BaseResultMap">
+    select o.id, o.code, o.user_id, o.rec_name, o.address, o.phone, o.status, o.order_sum, o.shipdate,o.orderdate
+    from orders o
+    order by o.orderdate desc
+  </select>
+  
+  <select id="selSale" parameterType="com.neu.buybook.vo.CollectVO" resultType="java.util.Map">
+    select month(o.orderdate) month,sum(oi.price*oi.num) total from orders o
+    inner join orderitems oi on o.id=oi.order_id
+    where year(o.orderdate)=#{year} and o.user_id=#{userId}
+    group by month(o.orderdate)
+  </select>
+  
+</mapper>

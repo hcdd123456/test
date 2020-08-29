@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neu.buybook.mapper.BookMapper">
+  <resultMap id="BaseResultMap" type="com.neu.buybook.model.Book">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="main_type" jdbcType="VARCHAR" property="mainType" />
+    <result column="sub_type" jdbcType="VARCHAR" property="subType" />
+    <result column="bname" jdbcType="VARCHAR" property="bname" />
+    <result column="isbn" jdbcType="VARCHAR" property="isbn" />
+    <result column="detail" jdbcType="VARCHAR" property="detail" />
+    <result column="ori_price" jdbcType="REAL" property="oriPrice" />
+    <result column="cur_price" jdbcType="REAL" property="curPrice" />
+    <result column="picture" jdbcType="VARCHAR" property="picture" />
+    <result column="page" jdbcType="INTEGER" property="page" />
+    <result column="publisher" jdbcType="VARCHAR" property="publisher" />
+    <result column="author" jdbcType="VARCHAR" property="author" />
+    <result column="new_book" jdbcType="CHAR" property="newBook" />
+    <result column="hot_book" jdbcType="CHAR" property="hotBook" />
+    <result column="sale_book" jdbcType="CHAR" property="saleBook" />
+    <result column="rec_book" jdbcType="CHAR" property="recBook" />
+    <result column="bdate" jdbcType="TIMESTAMP" property="bdate" />
+    <result column="pub_date" jdbcType="TIMESTAMP" property="pubDate" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from book
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.neu.buybook.model.Book">
+    insert into book (id, main_type, sub_type, 
+      bname, isbn, detail, 
+      ori_price, cur_price, picture, 
+      page, publisher, author, 
+      new_book, hot_book, sale_book, 
+      rec_book, bdate, pub_date
+      )
+    values (#{id,jdbcType=INTEGER}, #{mainType,jdbcType=VARCHAR}, #{subType,jdbcType=VARCHAR}, 
+      #{bname,jdbcType=VARCHAR}, #{isbn,jdbcType=VARCHAR}, #{detail,jdbcType=VARCHAR}, 
+      #{oriPrice,jdbcType=REAL}, #{curPrice,jdbcType=REAL}, #{picture,jdbcType=VARCHAR}, 
+      #{page,jdbcType=INTEGER}, #{publisher,jdbcType=VARCHAR}, #{author,jdbcType=VARCHAR}, 
+      #{newBook,jdbcType=CHAR}, #{hotBook,jdbcType=CHAR}, #{saleBook,jdbcType=CHAR}, 
+      #{recBook,jdbcType=CHAR}, #{bdate,jdbcType=TIMESTAMP}, #{pubDate,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.neu.buybook.model.Book">
+    update book
+    set main_type = #{mainType,jdbcType=VARCHAR},
+      sub_type = #{subType,jdbcType=VARCHAR},
+      bname = #{bname,jdbcType=VARCHAR},
+      isbn = #{isbn,jdbcType=VARCHAR},
+      detail = #{detail,jdbcType=VARCHAR},
+      ori_price = #{oriPrice,jdbcType=REAL},
+      cur_price = #{curPrice,jdbcType=REAL},
+      picture = #{picture,jdbcType=VARCHAR},
+      page = #{page,jdbcType=INTEGER},
+      publisher = #{publisher,jdbcType=VARCHAR},
+      author = #{author,jdbcType=VARCHAR},
+      new_book = #{newBook,jdbcType=CHAR},
+      hot_book = #{hotBook,jdbcType=CHAR},
+      sale_book = #{saleBook,jdbcType=CHAR},
+      rec_book = #{recBook,jdbcType=CHAR},
+      bdate = #{bdate,jdbcType=TIMESTAMP},
+      pub_date = #{pubDate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select id, main_type, sub_type, bname, isbn, detail, ori_price, cur_price, picture, 
+    page, publisher, author, new_book, hot_book, sale_book, rec_book, bdate, pub_date
+    from book
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" parameterType="com.neu.buybook.model.Book" resultMap="BaseResultMap">
+    select id, main_type, sub_type, bname, isbn, detail, ori_price, cur_price, picture, 
+    page, publisher, author, new_book, hot_book, sale_book, rec_book, bdate, pub_date
+    from book
+    <where>
+      <if test="bname != null and bname != ''">
+        and bname like concat('%',#{bname},'%')
+      </if>
+      <if test="mainType != null and mainType != ''">
+        and main_type=#{mainType}
+      </if>
+    </where>
+    order by bdate desc
+  </select>
+  <insert id="batchInsert" parameterType="List">
+    insert into book (main_type, sub_type,
+    bname, isbn, detail,
+    ori_price, cur_price, picture,
+    page, publisher, author,
+    new_book, hot_book, sale_book,
+    rec_book, bdate, pub_date
+    ) values
+    <foreach collection="list" item="b" separator=",">
+       (#{b.mainType,jdbcType=VARCHAR}, #{b.subType,jdbcType=VARCHAR},
+      #{b.bname,jdbcType=VARCHAR}, #{b.isbn,jdbcType=VARCHAR}, #{b.detail,jdbcType=VARCHAR},
+      #{b.oriPrice,jdbcType=REAL}, #{b.curPrice,jdbcType=REAL}, #{b.picture,jdbcType=VARCHAR},
+      #{b.page,jdbcType=INTEGER}, #{b.publisher,jdbcType=VARCHAR}, #{b.author,jdbcType=VARCHAR},
+      #{b.newBook,jdbcType=CHAR}, #{b.hotBook,jdbcType=CHAR}, #{b.saleBook,jdbcType=CHAR},
+      #{b.recBook,jdbcType=CHAR}, #{b.bdate,jdbcType=TIMESTAMP}, #{b.pubDate,jdbcType=TIMESTAMP})
+    </foreach>
+
+  </insert>
+</mapper>

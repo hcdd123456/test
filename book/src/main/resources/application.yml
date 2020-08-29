@@ -1,0 +1,12 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: book
+
+eureka:
+  client:
+    service-url:
+      #设置Eureka Server的地址，注册服务和查询服务都需要用到
+      defaultZone: http://localhost:8760/eureka

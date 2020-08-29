@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neu.buybook.mapper.OrderItemsMapper">
+  <resultMap id="BaseResultMap" type="com.neu.buybook.model.OrderItems">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="order_id" jdbcType="INTEGER" property="orderId" />
+    <result column="book_id" jdbcType="INTEGER" property="bookId" />
+    <result column="price" jdbcType="REAL" property="price" />
+    <result column="num" jdbcType="INTEGER" property="num" />
+  </resultMap>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from orderitems
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.neu.buybook.model.OrderItems">
+    insert into orderitems (id, order_id, book_id,
+      price, num)
+    values (#{id,jdbcType=INTEGER}, #{orderId,jdbcType=INTEGER}, #{bookId,jdbcType=INTEGER}, 
+      #{price,jdbcType=REAL}, #{num,jdbcType=INTEGER})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.neu.buybook.model.OrderItems">
+    update orderitems
+    set order_id = #{orderId,jdbcType=INTEGER},
+      book_id = #{bookId,jdbcType=INTEGER},
+      price = #{price,jdbcType=REAL},
+      num = #{num,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select id, order_id, book_id, price, num
+    from orderitems
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, order_id, book_id, price, num
+    from orderitems
+  </select>
+  <select id="selByOrder" parameterType="Integer" resultMap="BaseResultMap">
+    select oi.id oid,oi.order_id,oi.book_id,oi.price,oi.num
+    from orderitems oi
+    where oi.order_id=#{id}
+  </select>
+</mapper>
